@@ -1,0 +1,18 @@
+providers:
+  docker:
+    swarmMode: true
+    #endpoint: "unix://var/run/docker.sock"
+    watch: true
+    exposedByDefault: false
+    swarmModeRefreshSeconds: 5
+    network: "docker-apps"
+http:
+  routers:
+    my-router:
+      
+entryPoints:
+  web:
+    address: ':80'
+
+api:
+  insecure: true   
