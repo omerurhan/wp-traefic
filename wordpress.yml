@@ -1,4 +1,4 @@
-#wordpress application
+#wordpress with traefic application
 version: "3.8"
 services:
   wordpress:
@@ -20,10 +20,10 @@ services:
 
     environment:
       - WORDPRESS_DB_NAME=wordpress
-      - WORDPRESS_DB_USER=elif
-      - WORDPRESS_DB_PASSWORD=elif
+      - WORDPRESS_DB_USER=test
+      - WORDPRESS_DB_PASSWORD=new
       - WORDPRESS_DB_HOST=db:3306
-      - WORDPRESS_TABLE_PREFIX=elif
+      - WORDPRESS_TABLE_PREFIX=blabla
     networks:
       docker-apps:
 
@@ -35,10 +35,10 @@ services:
         constraints:
           - "node.role==manager"
     environment:
-      - MYSQL_ROOT_PASSWORD=elif
+      - MYSQL_ROOT_PASSWORD=root_pass
       - MYSQL_ALLOW_EMPTY_PASSWORD=no
-      - MYSQL_USER=elif
-      - MYSQL_PASSWORD=elif
+      - MYSQL_USER=username
+      - MYSQL_PASSWORD=user_pass
       - MYSQL_DATABASE=wordpress
     volumes:
       - /mnt/docker-swarm/mysql:/var/lib/mysql
