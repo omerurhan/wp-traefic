@@ -8,6 +8,7 @@ services:
     deploy:
       replicas: 5
       labels:
+         #change omer.com your domain address.
         - "traefik.http.routers.my-router.rule=Host(`omer.com`)"
         - "traefik.http.services.wordpress.loadbalancer.server.port=80"
         - "traefik.http.services.wordpress.loadbalancer.sticky=true"
@@ -41,13 +42,15 @@ services:
       - MYSQL_PASSWORD=user_pass
       - MYSQL_DATABASE=wordpress
     volumes:
+    # use your local disc for mount database file.
       - /mnt/docker-swarm/mysql:/var/lib/mysql
     networks:
       docker-apps:
+        #Static IP example.
         ipv4_address: 10.0.5.5
       
 
-
+#Create
   loadbalancer:
     image: traefik
     #command:
@@ -64,6 +67,7 @@ services:
       replicas: 1
       update_config:
         delay: 2s
+      # place containers manager node.
       placement:
         constraints:
           - "node.role == manager"
@@ -71,7 +75,7 @@ services:
       docker-apps:
 
     
-
+#create overlay network for this application.
 networks:
   docker-apps:
     driver: overlay
