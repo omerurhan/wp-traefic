@@ -33,9 +33,38 @@ entryPoints:
 #-----------------ROUTERS----------------#
 http:
   routers:
-    http-router1:
+    my-http-router:
+      entryPoints:
+        - "web"
+      service: "wordpress"
+      rule: "Host(`omer.com`)"
+    services:
+      wordpress:
+        loadbalancer:
+          sticky: "true"
+            cookie:
+              name: "wp-omer"
+          server:
+            port: "80"
+          healthcheck:
+            port: "80"
+
+
 
 tcp:
   routers:
-    tcp-router1:
+    my-tcp-router:
+      entryPoints:
+        - "grafana"
+      service:
+        - "grafana"
+      rule: "HostSNI(`*`)"
+    services:
+      grafana:
+        loadbalancer:
+          server:
+            port: "3000"
+          healthcheck:
+            port: "3000"
+
      

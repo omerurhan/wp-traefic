@@ -1,0 +1,23 @@
+#influxDB application
+version: "3.8"
+services:
+  influxdb:
+    image: influxdb
+    volumes:
+      - /mnt/docker-swarm/influxdb:/var/lib/influxdb
+    deploy:
+      replicas: 1
+    environment:
+      - INFLUXDB_DB=db0
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=admin
+      - INFLUXDB_LOGGING_LEVEL=debug
+    networks:
+      WP_docker-apps:
+        ipv4_address: 10.0.5.25
+        aliases: 
+          - influxdb
+
+networks:
+  WP_docker-apps:
+    external: true 

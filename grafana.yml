@@ -1,0 +1,27 @@
+#grafana application
+version: "3.8"
+services:
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - /mnt/docker-swarm/grafana/data:/var/lib/grafana
+      - /mnt/docker-swarm/grafana/config/:/etc/grafana
+      - /mnt/docker-swarm/grafana/log/:/var/log
+    environment:
+      - GF_PATHS_CONFIG=/etc/grafana/custom.ini
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=docker-apps"
+        - "traefik.tcp.routers.tcp-router1.entrypoints=grafana"
+        - "traefik.tcp.routers.tcp-router1.rule=HostSNI(`*`)"
+        - "traefik.tcp.services.grafana.loadbalancer.server.port=3000"
+    networks:
+      WP_docker-apps:
+        aliases: 
+          - grafana
+
+networks:
+  WP_docker-apps:
+    external: true 

@@ -1,0 +1,25 @@
+#openvpn application
+version: "3.8"
+services:
+  openvpn:
+    image: kylemanna/openvpn
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "3000:1194/udp"
+    volumes:
+      - openvpn:/etc/openvpn
+    deploy:
+      placement:
+        constraints:
+          - "node.role == manager"
+      replicas: 1
+    networks:
+      bridge:
+
+networks:
+  bridge:
+    external: true
+volumes:
+  openvpn:
+    external: true

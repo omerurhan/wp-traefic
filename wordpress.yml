@@ -5,18 +5,23 @@ services:
     image: wordpress:latest
     depends_on:
       - db
+    volumes:
+      - /mnt/docker-swarm/wordpress/:/var/www/html/wp-content
     deploy:
-      replicas: 5
+      replicas: 3
+      resources:
+        limits:
+          memory: 200M
       labels:
-        - "traefik.http.routers.my-router.rule=Host(`omer.com`)"
+        - "traefik.enable=true"
+        - "traefik.docker.network=docker-apps"
+        - "traefik.http.routers.http-router1.entrypoints=web"
+        - "traefik.http.routers.http-router1.rule=Host(`omer.com`)"
         - "traefik.http.services.wordpress.loadbalancer.server.port=80"
         - "traefik.http.services.wordpress.loadbalancer.sticky=true"
         - "traefik.http.services.wordpress.loadbalancer.sticky.cookie.name=wp-elif"
         - "traefik.http.services.wordpress.loadbalancer.healthcheck.port=80"
-        - "traefik.enable=true"
-        - "traefik.docker.network=docker-apps"
-        - "traefik.http.routers.my-router.entrypoints=web"
-        #- "traefik.backend.loadbalancer.method=drr"
+          #- "traefik.backend.loadbalancer.method=drr"
 
     environment:
       - WORDPRESS_DB_NAME=wordpress
@@ -31,9 +36,12 @@ services:
     image: mysql:5
     deploy:
       replicas: 1
+      resources:
+        limits:
+          memory: 800M
       placement:
         constraints:
-          - "node.role==manager"
+          - "node.role==worker"
     environment:
       - MYSQL_ROOT_PASSWORD=elif
       - MYSQL_ALLOW_EMPTY_PASSWORD=no
@@ -54,10 +62,15 @@ services:
     ports:
       - 80:80
       - 8080:8080
+      - 3000:3000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /home/centos/swarm-file/config.yml:/etc/traefik/traefik.yml
+      - /mnt/docker-swarm/logs:/var/log
     deploy:
+      resources:
+        limits:
+         memory: 250M
       restart_policy:
         condition: any
       mode: replicated
@@ -69,6 +82,7 @@ services:
           - "node.role == manager"
     networks:
       docker-apps:
+   
 
     
 
